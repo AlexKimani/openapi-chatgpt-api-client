@@ -1,0 +1,31 @@
+version: '3.9'
+services:
+  openapi-service:
+    image: openapi-service:latest
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+      cache_from:
+        - openjdk:20-slim
+        - maven:3.9.3-amazoncorretto-20
+    ports:
+      - target: 8080
+        published: 8080
+    volumes:
+      - "./src/main/resources/:/datadir/"
+      - "${HOME}/.m2:/root/.m2"
+    depends_on:
+      - service-mysql
+    environment:
+      - LOG_PATH=/var/log/
+      - LOG_LEVEL=INFO
+      - PORT=8080
+      - OPEN_AI_TOKEN=8705E66163F4715FA42586D510D859BEFDBBBFBE52A191A12E3B7D2EDD230854
+    restart: on-failure
+  # Names our volume
+volumes:
+  cache:
+    driver: local
+  openapi-service:
+  openapi:
